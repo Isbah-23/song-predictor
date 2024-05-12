@@ -165,10 +165,10 @@ def create_main_window():
                 widget.destroy()
             open_second_window(val)
 
-    set_background()
     # should i replace with vairable for cleaner look?
     entry = tk.Entry(root, width=42)
     entry.place(x=55+40-10-30, y=61.5+415.54-40)
+    set_background()
     # logo
     logo_image_path = "frontend_assets/FirstPage/Logo.png"
     logo_image = Image.open(logo_image_path)
