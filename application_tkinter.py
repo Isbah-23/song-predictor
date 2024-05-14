@@ -13,6 +13,7 @@ def init_window():
     root = tk.Tk()
     root.title("Song Predictor")
     root.geometry("360x640")
+    root.resizable(False, False)
     return root
 
 def clear_window(root):
@@ -35,15 +36,20 @@ def set_button(root, image_path, coordinates, command):
     button = tk.Button(root, image=button_image_tk, bd=0, command=command)
     button.image = button_image_tk
     button.place(x=coordinates[0], y=coordinates[1])
+    return button
 
-def open_second_window(val):
+def open_second_window(val, song_path_):
 
     # onclick functions for this window
     def play_button_clicked():
         if pygame.mixer.music.get_busy():
            pygame.mixer.music.pause()
+           pause.place_forget()
+           play.place(x=45+113+10,y=60.77+352)
         else:
             pygame.mixer.music.unpause()
+            play.place_forget()
+            pause.place(x=45+113+10,y=60.77+352)
             time_str = time_label.cget("text")
             new_counter = int(time_str.split(":")[1])
             update_time(new_counter)
@@ -89,7 +95,7 @@ def open_second_window(val):
 
     # Define initial file path
     song = map(val)
-    song_path = "frontend_assets/songs_and_covers/"+str(val)+".mp3"
+    song_path = song_path_
     song_name, song_artist = song['name'], song['artist']
     set_background()
     
@@ -113,7 +119,9 @@ def open_second_window(val):
     canvas.place(x=7.5, y=60.77+352+80-15)
     canvas.create_line(15, 10, 345, 10, fill="light grey", width=2) # base line
 
-    set_button(root, "frontend_assets/SecondPage/play.png", (45+113, 60.77+352), play_button_clicked)
+    play = set_button(root, "frontend_assets/SecondPage/play.png", (45+113+10, 60.77+352), play_button_clicked)
+    pause = set_button(root, "frontend_assets/SecondPage/pause.png", (45+113+10, 60.77+352), play_button_clicked)
+    play.place_forget()
     set_button(root, "frontend_assets/SecondPage/go_back.png", (45+63, 60.77+352+127), go_back_button_clicked)
 
     # Load the music file to get its length
@@ -163,12 +171,12 @@ def create_main_window():
             val = get_prediction_from_model(entry_text)
             for widget in root.winfo_children():
                 widget.destroy()
-            open_second_window(val)
+            open_second_window(val, entry_text)
 
+    set_background()
     # should i replace with vairable for cleaner look?
     entry = tk.Entry(root, width=42)
     entry.place(x=55+40-10-30, y=61.5+415.54-40)
-    set_background()
     # logo
     logo_image_path = "frontend_assets/FirstPage/Logo.png"
     logo_image = Image.open(logo_image_path)
